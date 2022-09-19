@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Classes\Logger;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
@@ -13,6 +14,13 @@ use Illuminate\Validation\Rules;
 
 class RegisteredUserController extends Controller
 {
+    private $Logger;
+
+    public function __construct()
+    {
+        $this->Logger = new Logger;
+    }
+
     /**
      * Display the registration view.
      *
@@ -20,6 +28,8 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
+        //Logger
+        $this->Logger->log('info', 'Entrou em Criar uma Conta de Utilizador');
         return view('auth.register');
     }
 
@@ -34,21 +44,24 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'name' => 'required|string|max:255',
+            'level' => 'required|string|max:40',
+            'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'level' => $request->level,
             'password' => Hash::make($request->password),
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        //Logger
+        $this->Logger->log('info', 'Criou uma conta de Utilizador de '.$user->name);
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect()->route('admin.user.index')->with('create', '1');
     }
 }
