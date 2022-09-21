@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTenantsTable extends Migration
+class CreateQuartersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,13 @@ class CreateTenantsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tenants', function (Blueprint $table) {
+        Schema::create('quarters', function (Blueprint $table) {
             $table->id();
+
             $table->string('name');
-            $table->json('tel');
-            $table->json('email');
-            $table->string('star', 10);
-            $table->string('address')->nullable();
-            $table->string('nif');
-            $table->integer('star')->nullable();
-            $table->string('logo')->nullable();
+            $table->foreignId('tenant_id')->nullable()->constrained('tenants');
+
+
             $table->timestamps();
             $table->softDeletes();
         });
@@ -35,6 +32,6 @@ class CreateTenantsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tenants');
+        Schema::dropIfExists('quarters');
     }
 }

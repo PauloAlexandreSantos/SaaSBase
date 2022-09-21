@@ -17,6 +17,8 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
 
+            $table->string('address');
+            $table->string('tel');
             $table->unsignedBigInteger('tenant_id')->nullable()->index();
 
             $table->string('email')->unique();
