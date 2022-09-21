@@ -22,8 +22,9 @@ class CreateLogsTable extends Migration
             $table->string('HTTP_USER_AGENT')->nullable();
             $table->longText('message')->nullable();
 
-            $table->unsignedBigInteger('tenant_id')->nullable()->index();
-            
+            $table->foreignId('tenant_id')->nullable()->constrained('tenants');
+
+
             $table->timestamps();
             $table->softDeletes();
         });
